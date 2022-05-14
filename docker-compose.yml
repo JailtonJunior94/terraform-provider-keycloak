@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:15.0.2
+    container_name: keycloak
+    restart: always
+    ports:
+      - 8080:8080
+      - 9990:9990
+    environment:
+      DB_VENDOR: mssql
+      DB_ADDR: keycloak_db
+      DB_DATABASE: Keycloak
+      DB_USER: sa
+      DB_PASSWORD: "@docker@2021"
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    networks:
+      - keycloak_network
+    depends_on:
+      - keycloak_db
+
+  keycloak_db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: keycloak-db
+    restart: always
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "@docker@2021"
+      ACCEPT_EULA: "Y"
+    networks:
+      - keycloak_network
+
+networks:
+  keycloak_network:
+    driver: bridge

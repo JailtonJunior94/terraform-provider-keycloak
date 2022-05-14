@@ -1,12 +1,14 @@
 terraform {
   required_providers {
-    example = {
+    keycloak = {
       version = "~> 1.0.0"
-      source  = "terraform-example.com/exampleprovider/example"
+      source  = "terraform-example.com/jailtonjunior/keycloak"
     }
   }
 }
 
-resource "example_server" "my-server-name" {
-	uuid_count = "1"
+provider "keycloak" {
+  url      = "http://localhost:8080/"
+  username = "admin"
+  password = "admin"
 }

@@ -1,5 +1,0 @@
-package keycloak
-
-func main() {
-
-}
