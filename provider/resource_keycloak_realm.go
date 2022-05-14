@@ -3,18 +3,18 @@ package provider
 import (
 	"context"
 
-	"github.com/jailtonjunior94/tf_keycloak/keycloak"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
+	keycloak "github.com/jailtonjunior94/keycloak-sdk-go"
 )
 
 func resourceKeycloakRealm() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceKeycloakRealmCreate,
-		Read:          nil,
-		Update:        nil,
-		Delete:        nil,
+		ReadContext:   resourceKeycloakRealmRead,
+		UpdateContext: resourceKeycloakRealmUpdate,
+		DeleteContext: resourceKeycloakRealmDelete,
 
 		Schema: map[string]*schema.Schema{
 			"realm": {
@@ -36,19 +36,24 @@ func resourceKeycloakRealm() *schema.Resource {
 }
 
 func resourceKeycloakRealmCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*keycloak.KeycloakClient)
+	realm := data.Get("realm").(string)
+	displayName := data.Get("display_name").(string)
+	enable := data.Get("enabled").(bool)
 
-	realm := &keycloak.Realm{
-		Id:          data.Get("realm").(string),
-		Realm:       data.Get("realm").(string),
-		DisplayName: data.Get("display_name").(string),
-		Enabled:     data.Get("enabled").(bool),
-	}
+	sdk := meta.(*keycloak.KeycloakSDK)
+	_, _ = sdk.CreateRealm(realm, displayName, enable)
 
-	err := client.NewRealm(ctx, realm)
-	if err != nil {
-		return diag.FromErr(err)
-	}
+	return nil
+}
 
+func resourceKeycloakRealmRead(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return nil
+}
+
+func resourceKeycloakRealmUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return nil
+}
+
+func resourceKeycloakRealmDelete(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	return nil
 }
