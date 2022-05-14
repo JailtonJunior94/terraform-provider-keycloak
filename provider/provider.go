@@ -38,7 +38,7 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"keycloak_realm": nil,
+			"keycloak_realm": resourceKeycloakRealm(),
 		},
 	}
 

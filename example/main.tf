@@ -12,3 +12,7 @@ provider "keycloak" {
   username = "admin"
   password = "admin"
 }
+
+resource "keycloak_realm" "teste" {
+  realm = "testando"
+}

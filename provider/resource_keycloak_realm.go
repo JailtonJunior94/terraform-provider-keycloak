@@ -1,49 +1,54 @@
 package provider
 
 import (
-	"log"
-	"net/http"
+	"context"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/jailtonjunior94/tf_keycloak/keycloak"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func resourceServer() *schema.Resource {
+func resourceKeycloakRealm() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceServerCreate,
-		Read:   resourceServerRead,
-		Update: resourceServerUpdate,
-		Delete: resourceServerDelete,
+		CreateContext: resourceKeycloakRealmCreate,
+		Read:          nil,
+		Update:        nil,
+		Delete:        nil,
 
 		Schema: map[string]*schema.Schema{
-			"uuid_count": {
+			"realm": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
+			},
+			"enabled": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
+			"display_name": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 		},
 	}
 }
 
-func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
-	uuid_count := d.Get("uuid_count").(string)
-	d.SetId(uuid_count)
-	resp, err := http.Get("https://www.uuidtools.com/api/generate/v1/count/" + uuid_count)
-	if err != nil {
-		log.Fatal(err)
+func resourceKeycloakRealmCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	client := meta.(*keycloak.KeycloakClient)
+
+	realm := &keycloak.Realm{
+		Id:          data.Get("realm").(string),
+		Realm:       data.Get("realm").(string),
+		DisplayName: data.Get("display_name").(string),
+		Enabled:     data.Get("enabled").(bool),
 	}
-	defer resp.Body.Close()
 
-	return resourceServerRead(d, m)
-}
+	err := client.NewRealm(ctx, realm)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
-func resourceServerRead(d *schema.ResourceData, m interface{}) error {
-	return nil
-}
-
-func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
-	return resourceServerRead(d, m)
-}
-
-func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
-	d.SetId("")
 	return nil
 }
