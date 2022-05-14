@@ -39,3 +39,7 @@ func NewKeycloak(ctx context.Context, url, basePath, realm, username, password s
 
 	return nil, nil
 }
+
+func (k *KeycloakClient) login() {
+
+}

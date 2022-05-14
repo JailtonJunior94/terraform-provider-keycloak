@@ -3,9 +3,10 @@ package provider
 import (
 	"context"
 
+	"github.com/jailtonjunior94/tf_keycloak/keycloak"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/jailtonjunior94/tf_keycloak/keycloak"
 )
 
 func Provider() *schema.Provider {
@@ -53,7 +54,6 @@ func Provider() *schema.Provider {
 
 		client, err := keycloak.NewKeycloak(ctx, url, basePath, realm, username, password)
 		if err != nil {
-
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
 				Summary:  "error initializing keycloak provider",
