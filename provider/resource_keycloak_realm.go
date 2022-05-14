@@ -1,20 +1,17 @@
 package provider
 
 import (
-	"context"
-
 	"github.com/jailtonjunior94/tf_keycloak/keycloak"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceKeycloakRealm() *schema.Resource {
 	return &schema.Resource{
-		Create:        resourceKeycloakRealmCreate,
-		ReadContext:   resourceKeycloakRealmRead,
-		UpdateContext: resourceKeycloakRealmUpdate,
-		Delete:        resourceKeycloakRealmDelete,
+		Read:   resourceKeycloakRealmRead,
+		Create: resourceKeycloakRealmCreate,
+		Update: resourceKeycloakRealmUpdate,
+		Delete: resourceKeycloakRealmDelete,
 
 		Schema: map[string]*schema.Schema{
 			"realm": {
@@ -51,12 +48,22 @@ func resourceKeycloakRealmCreate(data *schema.ResourceData, meta interface{}) er
 	return nil
 }
 
-func resourceKeycloakRealmRead(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceKeycloakRealmRead(data *schema.ResourceData, meta interface{}) error {
+	sdk := meta.(*keycloak.KeycloakSDK)
+
+	realmName := data.Get("realm").(string)
+
+	realm, err := sdk.FetchRealm(realmName)
+	if err != nil {
+		data.SetId("")
+	}
+
+	data.Set("realm", realm.Realm)
 	return nil
 }
 
-func resourceKeycloakRealmUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return nil
+func resourceKeycloakRealmUpdate(data *schema.ResourceData, meta interface{}) error {
+	return resourceKeycloakRealmRead(data, meta)
 }
 
 func resourceKeycloakRealmDelete(data *schema.ResourceData, meta interface{}) error {
