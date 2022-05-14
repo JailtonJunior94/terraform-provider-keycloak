@@ -4,10 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	keycloak "github.com/jailtonjunior94/keycloak-sdk-go"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/jailtonjunior94/tf_keycloak/keycloak"
 )
 
 func Provider() *schema.Provider {
@@ -49,20 +48,17 @@ func Provider() *schema.Provider {
 		basePath := data.Get("base_path").(string)
 		username := data.Get("username").(string)
 		password := data.Get("password").(string)
-		// realm := data.Get("realm").(string)
 
 		var diags diag.Diagnostics
 
-		sdk := keycloak.NewKeycloakSDK(ctx, fmt.Sprintf("%s%s", url, basePath), username, password)
-
-		// client, err := keycloak.NewKeycloak(ctx, url, basePath, realm, username, password)
-		// if err != nil {
-		// 	diags = append(diags, diag.Diagnostic{
-		// 		Severity: diag.Error,
-		// 		Summary:  "error initializing keycloak provider",
-		// 		Detail:   err.Error(),
-		// 	})
-		// }
+		sdk, err := keycloak.NewKeycloakSDK(ctx, fmt.Sprintf("%s%s", url, basePath), username, password)
+		if err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  "error initializing keycloak provider",
+				Detail:   err.Error(),
+			})
+		}
 
 		return sdk, diags
 	}

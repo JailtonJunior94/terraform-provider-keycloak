@@ -8,11 +8,12 @@ terraform {
 }
 
 provider "keycloak" {
-  url      = "http://localhost:8080/"
+  url      = "http://localhost:8080"
   username = "admin"
   password = "admin"
 }
 
-resource "keycloak_realm" "teste" {
-  realm = "testando"
+resource "keycloak_realm" "realm_test" {
+  realm = "realm_com_terraform"
+  display_name = "Automatizando a criação do realm com keycloak"
 }
