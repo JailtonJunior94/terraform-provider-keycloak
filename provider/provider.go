@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/jailtonjunior94/tf_keycloak/keycloak"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/jailtonjunior94/tf_keycloak/keycloak"
 )
 
 func Provider() *schema.Provider {
