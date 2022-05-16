@@ -68,6 +68,24 @@ type Realm struct {
 	Enabled     bool   `json:"enabled"`
 }
 
+func (k *KeycloakSDK) FetchRealm(realm string) (*Realm, error) {
+	uri := fmt.Sprintf("/admin/realms/%s", realm)
+	response, err := request("GET", k.BaseURL, uri, "application/json", k.Session.AccessToken, nil)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	var r Realm
+	err = json.Unmarshal(response, &r)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return &r, nil
+}
+
 func (k *KeycloakSDK) CreateRealm(realm, displayName string, enable bool) (*Realm, error) {
 	newRealm := &Realm{
 		ID:          realm,
@@ -92,22 +110,29 @@ func (k *KeycloakSDK) CreateRealm(realm, displayName string, enable bool) (*Real
 	return k.FetchRealm(realm)
 }
 
-func (k *KeycloakSDK) FetchRealm(realm string) (*Realm, error) {
-	uri := fmt.Sprintf("/admin/realms/%s", realm)
-	response, err := request("GET", k.BaseURL, uri, "application/json", k.Session.AccessToken, nil)
+func (k *KeycloakSDK) UpdateRealm(id, realm, displayName string, enable bool) (*Realm, error) {
+	updateRealm := &Realm{
+		ID:          realm,
+		Realm:       realm,
+		DisplayName: displayName,
+		Enabled:     enable,
+	}
+
+	json, err := json.Marshal(&updateRealm)
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
-	var r Realm
-	err = json.Unmarshal(response, &r)
+	uri := fmt.Sprintf("/admin/realms/%s", id)
+	payload := bytes.NewBuffer(json)
+	_, err = request("PUT", k.BaseURL, uri, "application/json", k.Session.AccessToken, payload)
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
-	return &r, nil
+	return k.FetchRealm(realm)
 }
 
 func (k *KeycloakSDK) DeleteRealm(realm string) error {

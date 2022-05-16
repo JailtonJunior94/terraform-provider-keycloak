@@ -44,16 +44,14 @@ func resourceKeycloakRealmCreate(data *schema.ResourceData, meta interface{}) er
 		return err
 	}
 
-	data.SetId(newRealm.ID)
+	data.SetId(newRealm.Realm)
 	return nil
 }
 
 func resourceKeycloakRealmRead(data *schema.ResourceData, meta interface{}) error {
 	sdk := meta.(*keycloak.KeycloakSDK)
 
-	realmName := data.Get("realm").(string)
-
-	realm, err := sdk.FetchRealm(realmName)
+	realm, err := sdk.FetchRealm(data.Id())
 	if err != nil {
 		data.SetId("")
 	}
@@ -63,7 +61,19 @@ func resourceKeycloakRealmRead(data *schema.ResourceData, meta interface{}) erro
 }
 
 func resourceKeycloakRealmUpdate(data *schema.ResourceData, meta interface{}) error {
-	return resourceKeycloakRealmRead(data, meta)
+	sdk := meta.(*keycloak.KeycloakSDK)
+
+	realmName := data.Get("realm").(string)
+	displayName := data.Get("display_name").(string)
+	enable := data.Get("enabled").(bool)
+
+	updateRealm, err := sdk.UpdateRealm(data.Id(), realmName, displayName, enable)
+	if err != nil {
+		data.SetId("")
+	}
+
+	data.SetId(updateRealm.Realm)
+	return nil
 }
 
 func resourceKeycloakRealmDelete(data *schema.ResourceData, meta interface{}) error {

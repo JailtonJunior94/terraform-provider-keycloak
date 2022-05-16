@@ -15,5 +15,5 @@ provider "keycloak" {
 
 resource "keycloak_realm" "realm_test" {
   realm = "realm_com_terraform"
-  display_name = "Automatizando a criação do realm com keycloak"
+  display_name = "Automatizando a criação do realm com keycloak [Editado]"
 }
