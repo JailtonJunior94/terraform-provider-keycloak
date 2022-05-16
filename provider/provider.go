@@ -39,7 +39,8 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"keycloak_realm": resourceKeycloakRealm(),
+			"keycloak_realm":        resourceKeycloakRealm(),
+			"keycloak_client_scope": resourceKeycloakClientScope(),
 		},
 	}
 

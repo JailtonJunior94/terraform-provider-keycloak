@@ -14,6 +14,17 @@ provider "keycloak" {
 }
 
 resource "keycloak_realm" "realm_test" {
-  realm = "realm_com_terraform"
-  display_name = "Automatizando a criação do realm com keycloak [Editado]"
+  realm        = "realm_terraform"
+  display_name = "Realm criado via terraform"
+}
+
+resource "keycloak_client_scope" "client_scope_test" {
+  realm_id    = keycloak_realm.realm_test.id
+  name        = "client_scope_terraform"
+  description = "Client Scope criado via Terraform"
+  protocol    = "openid-connect"
+
+  depends_on = [
+    keycloak_realm.realm_test
+  ]
 }
