@@ -52,6 +52,7 @@ func resourceKeycloakClientScopeCreate(data *schema.ResourceData, meta interface
 		return err
 	}
 
+	data.Set("name", new.Name)
 	data.SetId(new.ID)
 	return nil
 }
@@ -83,6 +84,7 @@ func resourceKeycloakClientScopeUpdate(data *schema.ResourceData, meta interface
 		data.SetId("")
 	}
 
+	data.Set("name", update.Name)
 	data.SetId(update.ID)
 	return nil
 }
