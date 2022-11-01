@@ -1,13 +1,11 @@
 package provider
 
 import (
-	"context"
+	"errors"
 	"fmt"
 
-	"github.com/jailtonjunior94/tf_keycloak/keycloak"
-
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/jailtonjunior94/keycloak-sdk-go/keycloak"
 )
 
 func Provider() *schema.Provider {
@@ -46,24 +44,18 @@ func Provider() *schema.Provider {
 		},
 	}
 
-	provider.ConfigureContextFunc = func(ctx context.Context, data *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	provider.ConfigureFunc = func(data *schema.ResourceData) (interface{}, error) {
 		url := data.Get("url").(string)
 		basePath := data.Get("base_path").(string)
 		username := data.Get("username").(string)
 		password := data.Get("password").(string)
 
-		var diags diag.Diagnostics
-
-		sdk, err := keycloak.NewKeycloakSDK(ctx, fmt.Sprintf("%s%s", url, basePath), username, password)
+		sdk, err := keycloak.NewKeycloakSDK(fmt.Sprintf("%s%s", url, basePath), username, password)
 		if err != nil {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  "error initializing keycloak provider",
-				Detail:   err.Error(),
-			})
+			return nil, errors.New("error initializing keycloak provider")
 		}
 
-		return sdk, diags
+		return sdk, nil
 	}
 
 	return provider

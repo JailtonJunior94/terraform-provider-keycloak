@@ -23,6 +23,9 @@ resource "keycloak_client_scope" "client_scope_test" {
   name        = "client_scope_terraform"
   description = "Client Scope criado via Terraform"
   protocol    = "openid-connect"
+  depends_on = [
+    keycloak_realm.realm_test
+  ]
 }
 
 resource "keycloak_client" "client_api_test" {
@@ -35,6 +38,9 @@ resource "keycloak_client" "client_api_test" {
   protocol                 = "openid-connect"
   public_client            = false
   service_accounts_enabled = true
+  depends_on = [
+    keycloak_client_scope.client_scope_test
+  ]
 }
 
 # resource "keycloak_client" "client_web_test" {

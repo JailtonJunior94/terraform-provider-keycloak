@@ -13,7 +13,7 @@ services:
       DB_ADDR: keycloak_db
       DB_DATABASE: Keycloak
       DB_USER: sa
-      DB_PASSWORD: "@docker@2021"
+      DB_PASSWORD: "@docker@2022"
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
     networks:
@@ -22,16 +22,18 @@ services:
       - keycloak_db
 
   keycloak_db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: keycloak-db
     restart: always
     ports:
       - "1433:1433"
     environment:
-      SA_PASSWORD: "@docker@2021"
+      SA_PASSWORD: "@docker@2022"
       ACCEPT_EULA: "Y"
     networks:
       - keycloak_network
+    volumes:
+      - ./data:/var/opt/mssql/data
 
 networks:
   keycloak_network:
