@@ -23,9 +23,6 @@ resource "keycloak_client_scope" "client_scope_test" {
   name        = "client_scope_terraform"
   description = "Client Scope criado via Terraform"
   protocol    = "openid-connect"
-  depends_on = [
-    keycloak_realm.realm_test
-  ]
 }
 
 resource "keycloak_client" "client_api_test" {
@@ -38,19 +35,16 @@ resource "keycloak_client" "client_api_test" {
   protocol                 = "openid-connect"
   public_client            = false
   service_accounts_enabled = true
-  depends_on = [
-    keycloak_client_scope.client_scope_test
-  ]
 }
 
-# resource "keycloak_client" "client_web_test" {
-#   realm_id                 = keycloak_realm.realm_test.id
-#   client_scope             = keycloak_client_scope.client_scope_test.name
-#   base_url                 = "http://localhost:8000"
-#   client_id                = "client_web_terraform"
-#   name                     = "client_web_terraform"
-#   description              = "Client Web criado via Terraform"
-#   protocol                 = "openid-connect"
-#   public_client            = true
-#   service_accounts_enabled = false
-# }
+resource "keycloak_client" "client_web_test" {
+  realm_id                 = keycloak_realm.realm_test.id
+  client_scope             = keycloak_client_scope.client_scope_test.name
+  base_url                 = "http://localhost:8000"
+  client_id                = "client_web_terraform"
+  name                     = "client_web_terraform"
+  description              = "Client Web criado via Terraform"
+  protocol                 = "openid-connect"
+  public_client            = true
+  service_accounts_enabled = false
+}
