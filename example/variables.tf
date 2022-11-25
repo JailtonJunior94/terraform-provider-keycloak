@@ -1,6 +1,6 @@
 variable "url" {
   description = "BaseURL do Keycloak"
-  default     = "http://localhost:8080"
+  default     = "https://qa-aks-conectcar-keycloak.conectcar.com"
 }
 
 variable "username" {
@@ -10,5 +10,5 @@ variable "username" {
 
 variable "password" {
   description = "Senha do usuário administrador do Keycloak"
-  default     = "admin"
+  default     = "@C0nectC@r@2021"
 }
