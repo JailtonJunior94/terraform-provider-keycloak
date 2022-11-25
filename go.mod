@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.16.0
-	github.com/jailtonjunior94/keycloak-sdk-go v1.0.2
+	github.com/jailtonjunior94/keycloak-sdk-go v1.0.3
 )
 
 require (
